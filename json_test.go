@@ -15,7 +15,18 @@ func TestMarshal(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "simple",
+			args:    args{struct{ Name string }{Name: "test"}},
+			want:    []byte(`{"Name":"test"}`),
+			wantErr: false,
+		},
+		{
+			name:    "fail simple",
+			args:    args{make(chan int)},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -25,7 +36,7 @@ func TestMarshal(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Marshal() = %v, want %v", got, tt.want)
+				t.Errorf("Marshal() = %v, want %v", string(got), string(tt.want))
 			}
 		})
 	}
@@ -41,7 +52,22 @@ func TestUnmarshal(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "simple",
+			args: args{
+				data: []byte(`{"Name":"test"}`),
+				v:    &struct{ Name string }{},
+			},
+			wantErr: false,
+		},
+		{
+			name: "simple failed",
+			args: args{
+				data: []byte("test"),
+				v:    &struct{ Name string }{},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

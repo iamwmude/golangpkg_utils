@@ -23,22 +23,22 @@ func TestGetString(t *testing.T) {
 	}{
 		{
 			name: "int",
-			args: args{v: 5},
+			args: args{5},
 			want: "5",
 		},
 		{
 			name: "float",
-			args: args{v: 5.5},
+			args: args{5.5},
 			want: "5.5",
 		},
 		{
 			name: "struct",
-			args: args{v: struct{ Name string }{Name: "test"}},
+			args: args{struct{ Name string }{Name: "test"}},
 			want: `{"Name":"test"}`,
 		},
 		{
 			name: "map",
-			args: args{v: map[string]int{"test": 5}},
+			args: args{map[string]int{"test": 5}},
 			want: `{"test":5}`,
 		},
 		{
