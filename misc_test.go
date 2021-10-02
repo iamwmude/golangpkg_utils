@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"gotest.tools/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetFirstReturn(t *testing.T) {
