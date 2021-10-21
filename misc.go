@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"log"
 	"reflect"
 )
 
@@ -34,20 +35,32 @@ func GetString(v interface{}) string {
 	}
 }
 
-func GetMapValue(m interface{}, key interface{}) (interface{}, error) {
+func GetMapValue(m interface{}, k interface{}) (interface{}, error) {
+	defer handlePanic()
+
+	if m == nil || k == nil {
+		return nil, errors.New("map is nil")
+	}
+
 	if reflect.TypeOf(m).Kind() != reflect.Map {
 		return nil, errors.New("map type error")
 	}
 
-	if keys := reflect.ValueOf(m).MapKeys(); len(keys) > 0 && keys[0].Kind() != reflect.TypeOf(key).Kind() {
+	if keys := reflect.ValueOf(m).MapKeys(); len(keys) > 0 && keys[0].Kind() != reflect.TypeOf(k).Kind() {
 		return nil, errors.New("key type error")
 	}
 
 	for iter := reflect.ValueOf(m).MapRange(); iter.Next(); {
-		if iter.Key().Interface() == key {
+		if iter.Key().Interface() == k {
 			return iter.Value().Interface(), nil
 		}
 	}
 
 	return nil, errors.New("not found")
+}
+
+func handlePanic() {
+	if err := recover(); err != nil {
+		log.Println("panic occur, err: ", err)
+	}
 }

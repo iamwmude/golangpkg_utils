@@ -83,6 +83,24 @@ func TestGetMapValue(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "map_is_nil",
+			args: args{
+				m:   nil,
+				key: "k2",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "key_is_nil",
+			args: args{
+				m:   map[string]string{"k1": "none", "k2": "test"},
+				key: nil,
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
 			name: "map_type_error",
 			args: args{
 				m:   "test",
