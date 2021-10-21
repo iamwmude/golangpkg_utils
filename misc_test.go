@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"reflect"
 	"strconv"
 	"testing"
 
@@ -56,6 +57,68 @@ func TestGetString(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetString(tt.args.v); got != tt.want {
 				t.Errorf("GetString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetMapValue(t *testing.T) {
+	type args struct {
+		m   interface{}
+		key interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    interface{}
+		wantErr bool
+	}{
+		{
+			name: "pass",
+			args: args{
+				m:   map[string]string{"k1": "none", "k2": "test"},
+				key: "k2",
+			},
+			want:    "test",
+			wantErr: false,
+		},
+		{
+			name: "map_type_error",
+			args: args{
+				m:   "test",
+				key: "k2",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "key_type_error",
+			args: args{
+				m:   map[string]string{"k1": "none", "k2": "test"},
+				key: 666,
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "not_found",
+			args: args{
+				m:   map[string]string{"k1": "none", "k2": "test"},
+				key: "k3",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetMapValue(tt.args.m, tt.args.key)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetMapValue() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetMapValue() = %v, want %v", got, tt.want)
 			}
 		})
 	}
