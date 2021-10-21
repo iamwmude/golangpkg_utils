@@ -38,14 +38,15 @@ func GetString(v interface{}) string {
 func GetMapValue(m interface{}, k interface{}) (interface{}, error) {
 	defer handlePanic()
 
-	if m == nil || k == nil {
+	if m == nil {
 		return nil, errors.New("map is nil")
 	}
-
+	if k == nil {
+		return nil, errors.New("key is nil")
+	}
 	if reflect.TypeOf(m).Kind() != reflect.Map {
 		return nil, errors.New("map type error")
 	}
-
 	if keys := reflect.ValueOf(m).MapKeys(); len(keys) > 0 && keys[0].Kind() != reflect.TypeOf(k).Kind() {
 		return nil, errors.New("key type error")
 	}
